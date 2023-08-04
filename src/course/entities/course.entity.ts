@@ -1,5 +1,7 @@
 import {
     Collection,
+    Embeddable,
+    Embedded,
     Entity,
     ManyToMany,
     ManyToOne,
@@ -10,8 +12,17 @@ import {
 import { Category } from '../../category/entities/category.entity';
 import { Topic } from '../../topic/entities/topic.entity';
 import { User } from '../../user/entities/user.entity';
-import { CourseRating } from '../../rating/entities/rating.entity';
-import { CourseMedia } from '../../media/entities/media.entity';
+import { Rating } from '../../rating/entities/rating.entity';
+import { CourseStatus } from './course-status.entity';
+
+@Embeddable()
+export class CourseMedia {
+    @Property()
+    featuredUri: string;
+
+    @Property()
+    coverUri: string;
+}
 
 @Entity({ tableName: 'courses' })
 export class Course {
@@ -27,6 +38,20 @@ export class Course {
     @Property({ type: 'varchar' })
     description: string;
 
+    @Property({
+        persist: false,
+        serializer: (value) => (value ? +value : 0),
+        type: 'string',
+    })
+    averageRating: number;
+
+    @Property({
+        persist: false,
+        serializer: (value) => (value ? +value : 0),
+        type: 'string',
+    })
+    duration: number;
+
     @ManyToOne(() => Category, { nullable: true, fieldName: 'category_id' })
     category?: Category;
 
@@ -39,11 +64,35 @@ export class Course {
     @ManyToMany(() => User, (user) => user.contributedCourses)
     instructors = new Collection<User>(this);
 
-    @OneToMany(() => CourseMedia, (media) => media.course)
-    mediaUrl = new Collection<CourseMedia>(this);
+    @Property({ persist: false })
+    get instructor() {
+        const instructors = this.instructors.toArray();
+        if (instructors.length === 1) {
+            return instructors[0];
+        }
+        return undefined;
+    }
 
-    @OneToMany(() => CourseRating, (rating) => rating.course)
-    ratings = new Collection<CourseRating>(this);
+    @Embedded(() => CourseMedia, {
+        object: true,
+        serializer: (value) =>
+            !value
+                ? {
+                      featured: null,
+                      cover: null,
+                  }
+                : value,
+    })
+    media: {
+        featured: string | null;
+        cover: string | null;
+    };
+
+    @ManyToOne(() => CourseStatus, { fieldName: 'status_id', nullable: true })
+    status: CourseStatus;
+
+    @OneToMany(() => Rating, (rating) => rating.course)
+    ratings = new Collection<Rating>(this);
 
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;

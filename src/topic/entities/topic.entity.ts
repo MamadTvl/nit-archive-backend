@@ -8,6 +8,7 @@ import {
 } from '@mikro-orm/core';
 import { Course } from '../../course/entities/course.entity';
 import { Video } from '../../video/entities/video.entity';
+import { DownloadItem } from '../../download-item/entities/download-item.entity';
 
 @Entity({ tableName: 'topics' })
 export class Topic {
@@ -23,9 +24,16 @@ export class Topic {
     @OneToMany(() => Video, (video) => video.topic)
     videos = new Collection<Video>(this);
 
+    @OneToMany(() => DownloadItem, (item) => item.topic)
+    downloadItems = new Collection<DownloadItem>(this);
+
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;
 
-    @Property({ type: 'timestamp', onUpdate: () => new Date() })
+    @Property({
+        type: 'timestamp',
+        onCreate: () => new Date(),
+        onUpdate: () => new Date(),
+    })
     updatedAt: Date;
 }

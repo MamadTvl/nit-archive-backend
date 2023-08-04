@@ -1,25 +1,14 @@
-import {
-    Embeddable,
-    Embedded,
-    Entity,
-    Enum,
-    ManyToOne,
-    PrimaryKey,
-    Property,
-} from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { Course } from '../../course/entities/course.entity';
-import { Video } from '../../video/entities/video.entity';
 import { User } from '../../user/entities/user.entity';
 
-export enum RatingType {
-    Course = 'Course',
-    Video = 'Video',
-}
+@Entity({ tableName: 'ratings' })
+export class Rating {
+    @PrimaryKey({ autoincrement: true })
+    id: number;
 
-@Embeddable({ abstract: true, discriminatorColumn: 'type' })
-export abstract class Rating {
-    @Enum(() => RatingType)
-    type!: RatingType;
+    @ManyToOne(() => Course, { fieldName: 'course_id' })
+    course: Course;
 
     @Property({ unsigned: true })
     rating: number;
@@ -39,35 +28,4 @@ export abstract class Rating {
         onUpdate: () => new Date(),
     })
     updatedAt: Date;
-}
-
-@Embeddable({ discriminatorValue: RatingType.Course })
-export class VideoRating extends Rating {
-    constructor() {
-        super();
-        this.type = RatingType.Video;
-    }
-
-    @ManyToOne(() => Video, { fieldName: 'video_id' })
-    video: Video;
-}
-
-@Embeddable({ discriminatorValue: RatingType.Course })
-export class CourseRating extends Rating {
-    constructor() {
-        super();
-        this.type = RatingType.Course;
-    }
-
-    @ManyToOne(() => Course, { fieldName: 'course_id' })
-    course: Course;
-}
-
-@Entity({ tableName: 'ratings' })
-export class RatingOwner {
-    @PrimaryKey({ autoincrement: true })
-    id: number;
-
-    @Embedded(() => [CourseRating, VideoRating])
-    model: CourseRating | VideoRating;
 }

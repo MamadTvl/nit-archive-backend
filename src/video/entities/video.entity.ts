@@ -7,7 +7,6 @@ import {
     Property,
 } from '@mikro-orm/core';
 import { Topic } from '../../topic/entities/topic.entity';
-import { VideoRating } from '../../rating/entities/rating.entity';
 
 @Entity({ tableName: 'videos' })
 export class Video {
@@ -26,11 +25,11 @@ export class Video {
     @Property({ type: 'varchar', nullable: true })
     aparatIframe: string | null;
 
+    @Property({ default: 0 })
+    length: number;
+
     @ManyToOne(() => Topic, { fieldName: 'topic_id' })
     topic: Topic;
-
-    @OneToMany(() => VideoRating, (rating) => rating.video)
-    ratings = new Collection<VideoRating>(this);
 
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;

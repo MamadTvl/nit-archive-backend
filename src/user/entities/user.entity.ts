@@ -8,9 +8,8 @@ import {
 } from '@mikro-orm/core';
 import { AccessToken } from './access-token.entity';
 import { Course } from '../../course/entities/course.entity';
-import { CourseRating, VideoRating } from '../../rating/entities/rating.entity';
-import { UserMedia } from '../../media/entities/media.entity';
 import { Role } from '../../role/entities/role.entity';
+import { Rating } from '../../rating/entities/rating.entity';
 
 @Entity({ tableName: 'users' })
 export class User {
@@ -32,11 +31,8 @@ export class User {
     @OneToMany(() => AccessToken, (accessToken) => accessToken.user)
     accessTokens = new Collection<AccessToken>(this);
 
-    @OneToMany(() => CourseRating, (rating) => rating.user)
-    courseRatings = new Collection<CourseRating>(this);
-
-    @OneToMany(() => VideoRating, (rating) => rating.user)
-    videoRatings = new Collection<VideoRating>(this);
+    @OneToMany(() => Rating, (rating) => rating.user)
+    ratings = new Collection<Rating>(this);
 
     @ManyToMany()
     courses = new Collection<Course>(this);
@@ -46,9 +42,6 @@ export class User {
 
     @ManyToMany()
     contributedCourses = new Collection<Course>(this);
-
-    @OneToMany(() => UserMedia, (media) => media.user)
-    mediaUrls = new Collection<UserMedia>(this);
 
     @Property({ nullable: true })
     firstName: string;

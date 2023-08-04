@@ -22,6 +22,13 @@ import { Course } from 'course/entities/course.entity';
 import { Category } from 'category/entities/category.entity';
 import { Topic } from 'topic/entities/topic.entity';
 import { Video } from 'video/entities/video.entity';
+import { DownloadItemModule } from './download-item/download-item.module';
+import { Role } from 'role/entities/role.entity';
+import { User } from 'user/entities/user.entity';
+import { DownloadItem } from 'download-item/entities/download-item.entity';
+import { Rating } from 'rating/entities/rating.entity';
+import { AccessToken } from 'user/entities/access-token.entity';
+import { CourseStatus } from 'course/entities/course-status.entity';
 
 const DEFAULT_ADMIN = {
     email: 'admin@example.com',
@@ -60,6 +67,24 @@ const authenticate = async (email: string, password: string) => {
                                 {
                                     resource: { model: Video, orm },
                                 },
+                                {
+                                    resource: { model: Role, orm },
+                                },
+                                {
+                                    resource: { model: User, orm },
+                                },
+                                {
+                                    resource: { model: DownloadItem, orm },
+                                },
+                                {
+                                    resource: { model: Rating, orm },
+                                },
+                                {
+                                    resource: { model: AccessToken, orm },
+                                },
+                                {
+                                    resource: { model: CourseStatus, orm },
+                                },
                             ],
                         },
                         auth: {
@@ -85,6 +110,7 @@ const authenticate = async (email: string, password: string) => {
         MediaModule,
         UserModule,
         RoleModule,
+        DownloadItemModule,
     ],
     controllers: [AppController],
     providers: [AppService],

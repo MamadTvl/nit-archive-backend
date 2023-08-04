@@ -39,6 +39,15 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "media": {
+          "name": "media",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
         "created_at": {
           "name": "created_at",
           "type": "datetime",
@@ -104,6 +113,69 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "typography_color": {
+          "name": "typography_color",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "bg_color": {
+          "name": "bg_color",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "icon_src": {
+          "name": "icon_src",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "course_statuses",
+      "indexes": [
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
         "slug": {
           "name": "slug",
           "type": "varchar(255)",
@@ -124,6 +196,24 @@
         },
         "category_id": {
           "name": "category_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "media": {
+          "name": "media",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "status_id": {
+          "name": "status_id",
           "type": "int",
           "unsigned": true,
           "autoincrement": false,
@@ -173,6 +263,15 @@
           "unique": false
         },
         {
+          "columnNames": [
+            "status_id"
+          ],
+          "composite": false,
+          "keyName": "courses_status_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "PRIMARY",
           "columnNames": [
             "id"
@@ -194,6 +293,19 @@
             "id"
           ],
           "referencedTableName": "categories",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "courses_status_id_foreign": {
+          "constraintName": "courses_status_id_foreign",
+          "columnNames": [
+            "status_id"
+          ],
+          "localTableName": "courses",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "course_statuses",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }
@@ -299,6 +411,102 @@
       ],
       "checks": [],
       "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "download_items",
+      "indexes": [
+        {
+          "columnNames": [
+            "topic_id"
+          ],
+          "composite": false,
+          "keyName": "download_items_topic_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "download_items_topic_id_foreign": {
+          "constraintName": "download_items_topic_id_foreign",
+          "columnNames": [
+            "topic_id"
+          ],
+          "localTableName": "download_items",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "topics",
+          "updateRule": "cascade"
+        }
+      }
     },
     {
       "columns": {
@@ -518,64 +726,35 @@
           "unsigned": true,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "integer"
         },
-        "type": {
-          "name": "type",
-          "type": "enum('User', 'Course', 'Category')",
-          "unsigned": false,
+        "rating": {
+          "name": "rating",
+          "type": "int",
+          "unsigned": true,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "enumItems": [
-            "User",
-            "Course",
-            "Category"
-          ],
-          "mappedType": "enum"
+          "mappedType": "integer"
         },
-        "uri": {
-          "name": "uri",
+        "description": {
+          "name": "description",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "string"
         },
-        "width": {
-          "name": "width",
+        "user_id": {
+          "name": "user_id",
           "type": "int",
-          "unsigned": false,
+          "unsigned": true,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
-        },
-        "height": {
-          "name": "height",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "collection": {
-          "name": "collection",
-          "type": "enum('featured', 'avatar', 'heading', 'cover')",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "featured",
-            "avatar",
-            "heading",
-            "cover"
-          ],
-          "mappedType": "enum"
         },
         "created_at": {
           "name": "created_at",
@@ -596,43 +775,16 @@
           "nullable": false,
           "length": 0,
           "mappedType": "datetime"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "category_id": {
-          "name": "category_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
         }
       },
-      "name": "media",
+      "name": "ratings",
       "indexes": [
         {
           "columnNames": [
             "course_id"
           ],
           "composite": false,
-          "keyName": "media_course_id_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "type"
-          ],
-          "composite": false,
-          "keyName": "media_type_index",
+          "keyName": "ratings_course_id_index",
           "primary": false,
           "unique": false
         },
@@ -641,16 +793,7 @@
             "user_id"
           ],
           "composite": false,
-          "keyName": "media_user_id_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "category_id"
-          ],
-          "composite": false,
-          "keyName": "media_category_id_index",
+          "keyName": "ratings_user_id_index",
           "primary": false,
           "unique": false
         },
@@ -666,43 +809,28 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "media_course_id_foreign": {
-          "constraintName": "media_course_id_foreign",
+        "ratings_course_id_foreign": {
+          "constraintName": "ratings_course_id_foreign",
           "columnNames": [
             "course_id"
           ],
-          "localTableName": "media",
+          "localTableName": "ratings",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "courses",
-          "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "media_user_id_foreign": {
-          "constraintName": "media_user_id_foreign",
+        "ratings_user_id_foreign": {
+          "constraintName": "ratings_user_id_foreign",
           "columnNames": [
             "user_id"
           ],
-          "localTableName": "media",
+          "localTableName": "ratings",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "users",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "media_category_id_foreign": {
-          "constraintName": "media_category_id_foreign",
-          "columnNames": [
-            "category_id"
-          ],
-          "localTableName": "media",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "categories",
-          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       }
@@ -1097,6 +1225,16 @@
           "nullable": true,
           "mappedType": "string"
         },
+        "length": {
+          "name": "length",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "0",
+          "mappedType": "integer"
+        },
         "topic_id": {
           "name": "topic_id",
           "type": "int",
@@ -1169,186 +1307,6 @@
             "id"
           ],
           "referencedTableName": "topics",
-          "updateRule": "cascade"
-        }
-      }
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "video_id": {
-          "name": "video_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "model_type": {
-          "name": "model_type",
-          "type": "enum('Course', 'Video')",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "Course",
-            "Video"
-          ],
-          "mappedType": "enum"
-        },
-        "model_rating": {
-          "name": "model_rating",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "model_description": {
-          "name": "model_description",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "string"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 0,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 0,
-          "mappedType": "datetime"
-        },
-        "course_id": {
-          "name": "course_id",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        }
-      },
-      "name": "ratings",
-      "indexes": [
-        {
-          "columnNames": [
-            "video_id"
-          ],
-          "composite": false,
-          "keyName": "ratings_video_id_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "model_type"
-          ],
-          "composite": false,
-          "keyName": "ratings_model_type_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "user_id"
-          ],
-          "composite": false,
-          "keyName": "ratings_user_id_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "course_id"
-          ],
-          "composite": false,
-          "keyName": "ratings_course_id_index",
-          "primary": false,
-          "unique": false
-        },
-        {
-          "keyName": "PRIMARY",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "ratings_video_id_foreign": {
-          "constraintName": "ratings_video_id_foreign",
-          "columnNames": [
-            "video_id"
-          ],
-          "localTableName": "ratings",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "videos",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "ratings_user_id_foreign": {
-          "constraintName": "ratings_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "ratings",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "users",
-          "updateRule": "cascade"
-        },
-        "ratings_course_id_foreign": {
-          "constraintName": "ratings_course_id_foreign",
-          "columnNames": [
-            "course_id"
-          ],
-          "localTableName": "ratings",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "courses",
-          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       }

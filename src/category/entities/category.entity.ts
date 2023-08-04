@@ -1,12 +1,22 @@
 import {
     Collection,
+    Embeddable,
+    Embedded,
     Entity,
     OneToMany,
     PrimaryKey,
     Property,
 } from '@mikro-orm/core';
 import { Course } from '../../course/entities/course.entity';
-import { CategoryMedia } from '../../media/entities/media.entity';
+
+@Embeddable()
+export class CategoryMedia {
+    @Property()
+    featuredUri: string;
+
+    @Property()
+    coverUri: string;
+}
 
 @Entity({ tableName: 'categories' })
 export class Category {
@@ -25,8 +35,20 @@ export class Category {
     @OneToMany(() => Course, (course) => course.category)
     courses = new Collection<Course>(this);
 
-    @OneToMany(() => CategoryMedia, (media) => media.category)
-    mediaUrl = new Collection<CategoryMedia>(this);
+    @Embedded(() => CategoryMedia, {
+        object: true,
+        serializer: (value) =>
+            !value
+                ? {
+                      featured: null,
+                      cover: null,
+                  }
+                : value,
+    })
+    media: {
+        featured: string | null;
+        cover: string | null;
+    };
 
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;
