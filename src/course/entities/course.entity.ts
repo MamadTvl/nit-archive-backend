@@ -15,6 +15,29 @@ import { User } from '../../user/entities/user.entity';
 import { Rating } from '../../rating/entities/rating.entity';
 import { CourseStatus } from './course-status.entity';
 
+type RatingTable = {
+    '1': {
+        total: number;
+        percentage: number;
+    };
+    '2': {
+        total: number;
+        percentage: number;
+    };
+    '3': {
+        total: number;
+        percentage: number;
+    };
+    '4': {
+        total: number;
+        percentage: number;
+    };
+    '5': {
+        total: number;
+        percentage: number;
+    };
+};
+
 @Embeddable()
 export class CourseMedia {
     @Property()
@@ -48,6 +71,48 @@ export class Course {
 
     @Property({
         persist: false,
+        fieldName: 'ratingTable',
+    })
+    get ratingTable(): RatingTable {
+        if (!this.ratings.isInitialized()) {
+            return undefined;
+        }
+        const ratings = this.ratings.toArray();
+        const table = {
+            '1': {
+                total: 0,
+                percentage: 0,
+            },
+            '2': {
+                total: 0,
+                percentage: 0,
+            },
+            '3': {
+                total: 0,
+                percentage: 0,
+            },
+            '4': {
+                total: 0,
+                percentage: 0,
+            },
+            '5': {
+                total: 0,
+                percentage: 0,
+            },
+        };
+        for (const rate of ratings) {
+            const star = rate.rating;
+            table[star].total = table[star].total + 1;
+        }
+        Object.keys(table).forEach((item) => {
+            table[item].percentage = (table[item].total / ratings.length) * 100;
+        });
+
+        return table;
+    }
+
+    @Property({
+        persist: false,
         serializer: (value) => (value ? +value : 0),
         type: 'string',
     })
@@ -55,6 +120,9 @@ export class Course {
 
     @ManyToOne(() => Category, { nullable: true, fieldName: 'category_id' })
     category?: Category;
+
+    @ManyToMany()
+    subcategories = new Collection<Category>(this);
 
     @ManyToMany()
     topics = new Collection<Topic>(this);

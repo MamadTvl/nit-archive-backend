@@ -3,6 +3,8 @@ import {
     Embeddable,
     Embedded,
     Entity,
+    ManyToMany,
+    ManyToOne,
     OneToMany,
     PrimaryKey,
     Property,
@@ -34,6 +36,15 @@ export class Category {
 
     @OneToMany(() => Course, (course) => course.category)
     courses = new Collection<Course>(this);
+
+    @ManyToMany(() => Course, (course) => course.subcategories)
+    sub_courses = new Collection<Course>(this);
+
+    @ManyToOne(() => Category, { fieldName: 'parent_id', nullable: true })
+    parent: Category;
+
+    @OneToMany(() => Category, (cat) => cat.parent)
+    children = new Collection<Category>(this);
 
     @Embedded(() => CategoryMedia, {
         object: true,

@@ -39,6 +39,15 @@
           "nullable": false,
           "mappedType": "string"
         },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "media": {
           "name": "media",
           "type": "json",
@@ -81,6 +90,15 @@
           "unique": true
         },
         {
+          "columnNames": [
+            "parent_id"
+          ],
+          "composite": false,
+          "keyName": "categories_parent_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "PRIMARY",
           "columnNames": [
             "id"
@@ -91,7 +109,21 @@
         }
       ],
       "checks": [],
-      "foreignKeys": {}
+      "foreignKeys": {
+        "categories_parent_id_foreign": {
+          "constraintName": "categories_parent_id_foreign",
+          "columnNames": [
+            "parent_id"
+          ],
+          "localTableName": "categories",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "categories",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
     },
     {
       "columns": {
@@ -307,6 +339,88 @@
           ],
           "referencedTableName": "course_statuses",
           "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "course_id": {
+          "name": "course_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "courses_subcategories",
+      "indexes": [
+        {
+          "columnNames": [
+            "course_id"
+          ],
+          "composite": false,
+          "keyName": "courses_subcategories_course_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "category_id"
+          ],
+          "composite": false,
+          "keyName": "courses_subcategories_category_id_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "PRIMARY",
+          "columnNames": [
+            "course_id",
+            "category_id"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "courses_subcategories_course_id_foreign": {
+          "constraintName": "courses_subcategories_course_id_foreign",
+          "columnNames": [
+            "course_id"
+          ],
+          "localTableName": "courses_subcategories",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "courses",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "courses_subcategories_category_id_foreign": {
+          "constraintName": "courses_subcategories_category_id_foreign",
+          "columnNames": [
+            "category_id"
+          ],
+          "localTableName": "courses_subcategories",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "categories",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       }
