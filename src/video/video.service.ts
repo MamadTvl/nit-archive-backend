@@ -1,19 +1,19 @@
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { Video } from './entities/video.entity';
+import { EntityRepository } from '@mikro-orm/mysql';
 
 @Injectable()
 export class VideoService {
-    create(createVideoDto: CreateVideoDto) {
-        return 'This action adds a new video';
-    }
+    constructor(
+        @InjectRepository(Video)
+        private readonly videoRepository: EntityRepository<Video>,
+    ) {}
 
-    findAll() {
-        return `This action returns all video`;
-    }
-
-    findOne(id: number) {
-        return `This action returns a #${id} video`;
+    findOne(videoId: number) {
+        // return this.videoRepository.findOneOrFail({})
     }
 
     update(id: number, updateVideoDto: UpdateVideoDto) {
