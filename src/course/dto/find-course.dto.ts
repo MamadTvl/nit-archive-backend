@@ -20,5 +20,9 @@ export class FindAllQuery {
     categoryId?: string;
 
     @IsOptional()
+    @IsNumberString()
+    subcategoryId?: string;
+
+    @IsOptional()
     title?: string;
 }

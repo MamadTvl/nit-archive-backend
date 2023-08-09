@@ -24,6 +24,10 @@ export class CourseService {
         if (query.categoryId) {
             qb.andWhere({ category: { id: query.categoryId } });
         }
+        if (query.subcategoryId) {
+            qb.leftJoin('course.subcategories', 'subcategory');
+            qb.andWhere({ subcategories: { id: query.subcategoryId } });
+        }
         const paginationQb = qb.clone();
         if (query.sort === 'newest') {
             qb.orderBy({ createdAt: 'DESC' });
