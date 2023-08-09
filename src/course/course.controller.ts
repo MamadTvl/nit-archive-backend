@@ -6,10 +6,35 @@ import {
     Patch,
     Param,
     Delete,
+    Query,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { IsIn, IsNumberString, IsOptional, IsString } from 'class-validator';
+
+export class FindAllQuery {
+    @IsIn(['list', 'slider'])
+    type: 'list' | 'slider' = 'list';
+
+    @IsIn(['newest', 'most-wanted'])
+    sort: 'newest' | 'most-wanted' = 'newest';
+
+    @IsOptional()
+    @IsNumberString()
+    page?: number;
+
+    @IsOptional()
+    @IsNumberString()
+    pageSize = '12';
+
+    @IsOptional()
+    @IsNumberString()
+    categoryId?: string;
+
+    @IsOptional()
+    title?: string;
+}
 
 @Controller('course')
 export class CourseController {
@@ -21,8 +46,13 @@ export class CourseController {
     }
 
     @Get()
-    findAll() {
-        return this.courseService.findAll();
+    async findAll(@Query() query: FindAllQuery) {
+        const courses = await this.courseService.findAll(query);
+        return {
+            message: 'courses found',
+            courses,
+            query,
+        };
     }
 
     @Get(':slug')
@@ -31,8 +61,8 @@ export class CourseController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-        return this.courseService.update(+id, updateCourseDto);
+    update(@Param('id') id: number, @Body() updateCourseDto: UpdateCourseDto) {
+        return this.courseService.update(id, updateCourseDto);
     }
 
     @Delete(':id')

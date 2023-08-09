@@ -42,6 +42,7 @@ export class Course {
         persist: false,
         serializer: (value) => (value ? +value : 0),
         type: 'string',
+        fieldName: 'averageRating',
     })
     averageRating: number;
 
