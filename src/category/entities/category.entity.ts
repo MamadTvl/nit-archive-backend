@@ -40,7 +40,11 @@ export class Category {
     @ManyToMany(() => Course, (course) => course.subcategories)
     sub_courses = new Collection<Course>(this);
 
-    @ManyToOne(() => Category, { fieldName: 'parent_id', nullable: true })
+    @ManyToOne(() => Category, {
+        fieldName: 'parent_id',
+        nullable: true,
+        hidden: true,
+    })
     parent: Category;
 
     @OneToMany(() => Category, (cat) => cat.parent)
