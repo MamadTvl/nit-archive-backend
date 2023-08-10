@@ -14,14 +14,14 @@ async function bootstrap() {
         .setTitle('NIT Archive')
         .setDescription('The NIT Archive API description')
         .setVersion('1.0')
+        .addTag('user')
         .addTag('course')
         .addTag('category')
-        .addTag('topic')
         .addTag('video')
         .addTag('download-item')
         .addTag('rating')
         .addTag('media')
-        .addTag('user')
+        .addTag('topic')
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);
