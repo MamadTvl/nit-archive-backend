@@ -29,6 +29,7 @@ import { DownloadItem } from 'download-item/entities/download-item.entity';
 import { Rating } from 'rating/entities/rating.entity';
 import { AccessToken } from 'user/entities/access-token.entity';
 import { CourseStatus } from 'course/entities/course-status.entity';
+import { AuthorizationMiddleware } from 'common/middleware/Authorization.middleware';
 
 const DEFAULT_ADMIN = {
     email: 'admin@example.com',
@@ -130,5 +131,6 @@ export class AppModule implements NestModule, OnModuleInit {
     // around this issue
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(MikroOrmMiddleware).forRoutes('*');
+        consumer.apply(AuthorizationMiddleware).forRoutes('*');
     }
 }

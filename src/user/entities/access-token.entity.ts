@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
 import { User } from './user.entity';
+import { createHash } from 'crypto';
 
 @Entity({ tableName: 'access_tokens' })
 export class AccessToken {
@@ -20,4 +21,9 @@ export class AccessToken {
 
     @Property({ nullable: true })
     deletedAt: Date | null;
+
+    constructor(token: string) {
+        this.createdAt = new Date();
+        this.lastUsedAt = new Date();
+    }
 }

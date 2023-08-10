@@ -1303,15 +1303,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "slug": {
-          "name": "slug",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "string"
-        },
         "description": {
           "name": "description",
           "type": "varchar(255)",
@@ -1381,15 +1372,6 @@
       },
       "name": "videos",
       "indexes": [
-        {
-          "columnNames": [
-            "slug"
-          ],
-          "composite": false,
-          "keyName": "videos_slug_unique",
-          "primary": false,
-          "unique": true
-        },
         {
           "columnNames": [
             "topic_id"

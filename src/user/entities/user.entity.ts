@@ -10,6 +10,7 @@ import { AccessToken } from './access-token.entity';
 import { Course } from '../../course/entities/course.entity';
 import { Role } from '../../role/entities/role.entity';
 import { Rating } from '../../rating/entities/rating.entity';
+import { LoginDto } from 'user/dto/login.dto';
 
 @Entity({ tableName: 'users' })
 export class User {
@@ -50,11 +51,23 @@ export class User {
     lastName: string;
 
     @Property({ type: 'tinyint' })
-    isVerified: boolean;
+    isVerified = false;
 
     @Property({ onCreate: () => new Date() })
     createdAt: Date;
 
-    @Property({ onUpdate: () => new Date(), nullable: true })
+    @Property({
+        onCreate: () => new Date(),
+        onUpdate: () => new Date(),
+        nullable: true,
+    })
     updatedAt: Date;
+
+    constructor(data: LoginDto) {
+        this.username = data.username;
+        this.password = data.password;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+        this.isVerified = false;
+    }
 }

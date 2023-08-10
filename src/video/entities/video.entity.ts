@@ -13,9 +13,6 @@ export class Video {
     @PrimaryKey({ autoincrement: true })
     id: number;
 
-    @Property({ type: 'varchar', unique: true })
-    slug: string | null;
-
     @Property({ type: 'varchar', nullable: true })
     description: string | null;
 

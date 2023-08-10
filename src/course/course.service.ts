@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/mysql';
 import { Course } from './entities/course.entity';
@@ -46,7 +46,7 @@ export class CourseService {
         return qb.getResultList();
     }
 
-    findOne(slug: string) {
+    async findOne(slug: string) {
         const qb = this.courseRepository.createQueryBuilder('course');
         qb.leftJoinAndSelect('course.ratings', 'rating');
         qb.leftJoinAndSelect('rating.user', 'user');
@@ -59,6 +59,10 @@ export class CourseService {
         qb.addSelect('avg(rating.rating) as averageRating');
         qb.addSelect('sum(video.length) as duration');
         qb.where('course.slug = ?', [slug]);
-        return qb.getSingleResult();
+        try {
+            return await qb.getSingleResult();
+        } catch {
+            throw new NotFoundException();
+        }
     }
 }
