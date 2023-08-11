@@ -52,18 +52,16 @@ export class Category {
 
     @Embedded(() => CategoryMedia, {
         object: true,
+        nullable: true,
         serializer: (value) =>
             !value
                 ? {
-                      featured: null,
-                      cover: null,
+                      featuredUri: null,
+                      coverUri: null,
                   }
                 : value,
     })
-    media: {
-        featured: string | null;
-        cover: string | null;
-    };
+    media: CategoryMedia;
 
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;

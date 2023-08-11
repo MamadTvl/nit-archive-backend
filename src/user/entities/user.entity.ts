@@ -1,5 +1,7 @@
 import {
     Collection,
+    Embeddable,
+    Embedded,
     Entity,
     ManyToMany,
     OneToMany,
@@ -10,7 +12,13 @@ import { AccessToken } from './access-token.entity';
 import { Course } from '../../course/entities/course.entity';
 import { Role } from '../../role/entities/role.entity';
 import { Rating } from '../../rating/entities/rating.entity';
-import { LoginDto } from 'user/dto/login.dto';
+import { LoginDto } from '../../user/dto/login.dto';
+
+@Embeddable()
+export class UserMedia {
+    @Property()
+    avatarUri: string;
+}
 
 @Entity({ tableName: 'users' })
 export class User {
@@ -49,6 +57,18 @@ export class User {
 
     @Property({ nullable: true })
     lastName: string;
+
+    @Embedded(() => UserMedia, {
+        object: true,
+        nullable: true,
+        serializer: (value) =>
+            !value
+                ? {
+                      avatarUri: null,
+                  }
+                : value,
+    })
+    media: UserMedia;
 
     @Property({ type: 'tinyint' })
     isVerified = false;

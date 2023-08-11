@@ -54,7 +54,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "json"
         },
         "created_at": {
@@ -241,7 +241,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "json"
         },
         "status_id": {
@@ -768,6 +768,15 @@
           "primary": false,
           "nullable": true,
           "mappedType": "string"
+        },
+        "media": {
+          "name": "media",
+          "type": "json",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         },
         "is_verified": {
           "name": "is_verified",

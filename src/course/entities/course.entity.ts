@@ -40,10 +40,10 @@ type RatingTable = {
 
 @Embeddable()
 export class CourseMedia {
-    @Property()
+    @Property({ nullable: true })
     featuredUri: string;
 
-    @Property()
+    @Property({ nullable: true })
     coverUri: string;
 }
 
@@ -144,18 +144,16 @@ export class Course {
 
     @Embedded(() => CourseMedia, {
         object: true,
+        nullable: true,
         serializer: (value) =>
             !value
                 ? {
-                      featured: null,
-                      cover: null,
+                      featuredUri: null,
+                      coverUri: null,
                   }
                 : value,
     })
-    media: {
-        featured: string | null;
-        cover: string | null;
-    };
+    media: CourseMedia;
 
     @ManyToOne(() => CourseStatus, { fieldName: 'status_id', nullable: true })
     status: CourseStatus;
