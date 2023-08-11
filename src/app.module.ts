@@ -17,7 +17,6 @@ import { MediaModule } from './media/media.module';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { ConfigModule } from '@nestjs/config';
-import { log } from 'console';
 import { Course } from 'course/entities/course.entity';
 import { Category } from 'category/entities/category.entity';
 import { Topic } from 'topic/entities/topic.entity';
@@ -30,6 +29,9 @@ import { Rating } from 'rating/entities/rating.entity';
 import { AccessToken } from 'user/entities/access-token.entity';
 import { CourseStatus } from 'course/entities/course-status.entity';
 import { AuthorizationMiddleware } from 'common/middleware/Authorization.middleware';
+import { BullModule } from '@nestjs/bull';
+import configuration from 'config/configuration';
+import { UploadModule } from 'upload/upload.module';
 
 const DEFAULT_ADMIN = {
     email: 'admin@example.com',
@@ -45,8 +47,21 @@ const authenticate = async (email: string, password: string) => {
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+            cache: true,
+            load: [configuration],
+        }),
         MikroOrmModule.forRoot(),
+        BullModule.forRoot({
+            prefix: 'NIT',
+            redis: {
+                host: process.env.REDIS_HOST,
+                port: +process.env.REDIS_PORT,
+                db: +process.env.REDIS_DB,
+                password: process.env.REDIS_PASSWORD,
+            },
+        }),
         import('@adminjs/nestjs').then(({ AdminModule }) =>
             AdminModule.createAdminAsync({
                 inject: [MikroORM],
@@ -112,6 +127,7 @@ const authenticate = async (email: string, password: string) => {
         UserModule,
         RoleModule,
         DownloadItemModule,
+        UploadModule,
     ],
     controllers: [AppController],
     providers: [AppService],
