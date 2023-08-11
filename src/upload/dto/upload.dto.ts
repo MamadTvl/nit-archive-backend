@@ -1,4 +1,4 @@
-import { IsIn, IsNumber, IsNumberString } from 'class-validator';
+import { IsIn, IsNumberString } from 'class-validator';
 
 export class UploadMediaDto {
     @IsIn(['course', 'category', 'course-status', 'user'])
