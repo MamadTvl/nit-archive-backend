@@ -18,6 +18,7 @@ async function bootstrap() {
         .addTag('course')
         .addTag('category')
         .addTag('video')
+        .addTag('upload')
         .addTag('download-item')
         .addTag('rating')
         .addTag('media')

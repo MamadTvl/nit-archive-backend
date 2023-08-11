@@ -8,5 +8,6 @@ import { Category } from './entities/category.entity';
     imports: [MikroOrmModule.forFeature([Category])],
     controllers: [CategoryController],
     providers: [CategoryService],
+    exports: [MikroOrmModule.forFeature([Category])],
 })
 export class CategoryModule {}

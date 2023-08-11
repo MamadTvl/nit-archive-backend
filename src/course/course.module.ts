@@ -8,5 +8,6 @@ import { Course } from './entities/course.entity';
     imports: [MikroOrmModule.forFeature([Course])],
     controllers: [CourseController],
     providers: [CourseService],
+    exports: [MikroOrmModule.forFeature([Course])],
 })
 export class CourseModule {}
