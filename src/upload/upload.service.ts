@@ -1,27 +1,34 @@
 import { InjectQueue } from '@nestjs/bull';
-import {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Queue } from 'bull';
-import { UploadMediaDto, UploadVideoDto } from './dto/upload.dto';
+import {
+    UploadItemDto,
+    UploadMediaDto,
+    UploadVideoDto,
+} from './dto/upload.dto';
 import { mkdir, writeFile } from 'fs/promises';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
-import { UploadMediaJob, UploadVideoJob } from './upload-media.processor';
+import {
+    UploadDownloadItemJob,
+    UploadMediaJob,
+    UploadVideoJob,
+} from './upload-media.processor';
 import { EntityManager } from '@mikro-orm/mysql';
 import { Course } from 'course/entities/course.entity';
 import { Category } from 'category/entities/category.entity';
 import { CourseStatus } from 'course/entities/course-status.entity';
 import { User } from 'user/entities/user.entity';
 import { Video } from 'video/entities/video.entity';
+import { DownloadItem } from 'download-item/entities/download-item.entity';
 
 @Injectable()
 export class UploadService {
     constructor(
         @InjectQueue('upload')
-        private uploadQueue: Queue<UploadMediaJob | UploadVideoJob>,
+        private uploadQueue: Queue<
+            UploadMediaJob | UploadVideoJob | UploadDownloadItemJob
+        >,
         private readonly em: EntityManager,
     ) {}
 
@@ -34,7 +41,7 @@ export class UploadService {
     }
 
     private async isModelExists(
-        model: UploadMediaDto['model'] | 'video',
+        model: UploadMediaDto['model'] | 'video' | 'download-item',
         modelId: number,
     ) {
         try {
@@ -53,6 +60,9 @@ export class UploadService {
                     break;
                 case 'video':
                     await this.em.findOneOrFail(Video, { id: modelId });
+                    break;
+                case 'download-item':
+                    await this.em.findOneOrFail(DownloadItem, { id: modelId });
                     break;
             }
         } catch {
@@ -84,6 +94,22 @@ export class UploadService {
         const location = await this.saveLocal(file);
         await this.uploadQueue.add('video', {
             videoId: data.videoId,
+            fileSrc: location,
+            originalname: file.originalname,
+        });
+    }
+
+    async uploadItem(data: UploadItemDto, file: Express.Multer.File) {
+        const exist = await this.isModelExists(
+            'download-item',
+            data.downloadItemId,
+        );
+        if (!exist) {
+            throw new NotFoundException();
+        }
+        const location = await this.saveLocal(file);
+        await this.uploadQueue.add('download-item', {
+            downloadItemId: data.downloadItemId,
             fileSrc: location,
             originalname: file.originalname,
         });

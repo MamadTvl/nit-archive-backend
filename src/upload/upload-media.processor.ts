@@ -8,6 +8,7 @@ import { Config } from 'config/configuration';
 import { CourseStatus } from 'course/entities/course-status.entity';
 import { Course } from 'course/entities/course.entity';
 import { randomUUID } from 'crypto';
+import { DownloadItem } from 'download-item/entities/download-item.entity';
 import { readFile, rm } from 'fs/promises';
 import * as path from 'path';
 import { User } from 'user/entities/user.entity';
@@ -25,6 +26,12 @@ export type UploadVideoJob = {
     fileSrc: string;
     originalname: string;
     videoId: number;
+};
+
+export type UploadDownloadItemJob = {
+    fileSrc: string;
+    originalname: string;
+    downloadItemId: number;
 };
 
 @Processor('upload')
@@ -139,6 +146,12 @@ export class UploadConsumer {
         await this.em.flush();
     }
 
+    private async updateDownloadItem(id: number, locationUrl: string) {
+        const ref = this.em.getReference(DownloadItem, id);
+        ref.url = locationUrl;
+        await this.em.flush();
+    }
+
     @Process({ concurrency: 20, name: 'media' })
     protected async uploadMedia(job: Job<UploadMediaJob>) {
         const { directory, collection, model, modelId, originalname } =
@@ -193,6 +206,21 @@ export class UploadConsumer {
         );
         await this.uploadToS3(file, destination);
         await this.updateVideo(videoId, destination);
+        await rm(fileSrc);
+    }
+
+    @Process({ name: 'download-item', concurrency: 20 })
+    async uploadItem(job: Job<UploadDownloadItemJob>) {
+        const { fileSrc, originalname, downloadItemId } = job.data;
+        const file = await readFile(fileSrc);
+        const destination = path.join(
+            'files',
+            downloadItemId.toString(),
+            randomUUID(),
+            originalname,
+        );
+        await this.uploadToS3(file, destination);
+        await this.updateDownloadItem(downloadItemId, destination);
         await rm(fileSrc);
     }
 }

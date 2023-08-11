@@ -15,3 +15,8 @@ export class UploadVideoDto {
     @IsNumberString()
     videoId: number;
 }
+
+export class UploadItemDto {
+    @IsNumberString()
+    downloadItemId: number;
+}

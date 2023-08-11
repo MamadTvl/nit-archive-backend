@@ -1,5 +1,9 @@
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadMediaDto, UploadVideoDto } from './dto/upload.dto';
+import {
+    UploadItemDto,
+    UploadMediaDto,
+    UploadVideoDto,
+} from './dto/upload.dto';
 import { UploadService } from './upload.service';
 import {
     Body,
@@ -98,6 +102,45 @@ export class UploadController {
         file: Express.Multer.File,
     ) {
         await this.uploadService.uploadVideo(body, file);
+        return {
+            message: 'file uploaded',
+            body,
+        };
+    }
+
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        // description: 'add new task',
+        schema: {
+            type: 'object',
+            properties: {
+                item: {
+                    type: 'string',
+                    format: 'binary',
+                    nullable: false,
+                },
+                downloadItemId: {
+                    type: 'number',
+                    nullable: false,
+                },
+            },
+        },
+    })
+    @Post('download-item')
+    @UseInterceptors(FileInterceptor('item'))
+    async uploadItem(
+        @Body() body: UploadItemDto,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({ maxSize: Infinity }),
+                    new FileTypeValidator({ fileType: /.*/ }),
+                ],
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        await this.uploadService.uploadItem(body, file);
         return {
             message: 'file uploaded',
             body,
