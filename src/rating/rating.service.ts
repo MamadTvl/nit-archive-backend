@@ -29,13 +29,17 @@ export class RatingService {
                 HttpStatus.PAYMENT_REQUIRED,
             );
         }
-        const rating = await this.em.upsert(Rating, {
-            course: createRatingDto.courseId,
-            description: createRatingDto.comment,
-            rating: createRatingDto.rating,
-            user: userId,
-        });
-        return rating.id;
+        try {
+            const rating = await this.em.upsert(Rating, {
+                course: createRatingDto.courseId,
+                description: createRatingDto.comment,
+                rating: createRatingDto.rating,
+                user: userId,
+            });
+            return rating.id;
+        } catch {
+            throw new NotFoundException();
+        }
     }
 
     async find(userId: number, courseId: number) {
