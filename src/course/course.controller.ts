@@ -30,7 +30,11 @@ export class CourseController {
     }
 
     @Get(':slug')
-    findOne(@Param('slug') slug: string) {
-        return this.courseService.findOne(slug);
+    async findOne(@Param('slug') slug: string) {
+        const course = await this.courseService.findOne(slug);
+        return {
+            message: 'course found',
+            course,
+        };
     }
 }
