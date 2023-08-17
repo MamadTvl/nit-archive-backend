@@ -9,6 +9,6 @@ import { AccessToken } from './entities/access-token.entity';
     imports: [MikroOrmModule.forFeature([User, AccessToken])],
     controllers: [UserController],
     providers: [UserService],
-    exports: [MikroOrmModule.forFeature([User, AccessToken])],
+    exports: [MikroOrmModule.forFeature([User, AccessToken]), UserService],
 })
 export class UserModule {}

@@ -1,42 +1,42 @@
 import {
     Controller,
-    Get,
     Post,
     Body,
-    Patch,
+    UseGuards,
+    Req,
+    Get,
     Param,
-    Delete,
 } from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
-import { UpdateRatingDto } from './dto/update-rating.dto';
+import { AuthGuard } from 'common/guard/auth.guard';
+import { Request } from 'express';
 
 @Controller('rating')
 export class RatingController {
     constructor(private readonly ratingService: RatingService) {}
 
     @Post()
-    create(@Body() createRatingDto: CreateRatingDto) {
-        return this.ratingService.create(createRatingDto);
+    @UseGuards(AuthGuard)
+    async create(
+        @Body() createRatingDto: CreateRatingDto,
+        @Req() req: Request,
+    ) {
+        const userId = req.user.id;
+        const id = await this.ratingService.upsert(userId, createRatingDto);
+        return {
+            message: 'successfully added',
+            id,
+        };
     }
 
-    @Get()
-    findAll() {
-        return this.ratingService.findAll();
-    }
-
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.ratingService.findOne(+id);
-    }
-
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateRatingDto: UpdateRatingDto) {
-        return this.ratingService.update(+id, updateRatingDto);
-    }
-
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.ratingService.remove(+id);
+    @Get('/course/:course_id')
+    @UseGuards(AuthGuard)
+    async find(@Param('course_id') courseId: number, @Req() req: Request) {
+        const userId = req.user.id;
+        const rating = await this.ratingService.find(userId, courseId);
+        return {
+            rating,
+        };
     }
 }

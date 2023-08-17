@@ -887,6 +887,7 @@
           "primary": false,
           "nullable": false,
           "length": 0,
+          "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
         },
         "updated_at": {
@@ -897,6 +898,7 @@
           "primary": false,
           "nullable": false,
           "length": 0,
+          "default": "CURRENT_TIMESTAMP",
           "mappedType": "datetime"
         }
       },
@@ -919,6 +921,16 @@
           "keyName": "ratings_user_id_index",
           "primary": false,
           "unique": false
+        },
+        {
+          "keyName": "ratings_user_id_course_id_unique",
+          "columnNames": [
+            "user_id",
+            "course_id"
+          ],
+          "composite": true,
+          "primary": false,
+          "unique": true
         },
         {
           "keyName": "PRIMARY",

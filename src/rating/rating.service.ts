@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
-import { UpdateRatingDto } from './dto/update-rating.dto';
+import { Rating } from './entities/rating.entity';
+import { EntityManager } from '@mikro-orm/mysql';
+import { UserService } from 'user/user.service';
 
 @Injectable()
 export class RatingService {
-    create(createRatingDto: CreateRatingDto) {
-        return 'This action adds a new rating';
+    constructor(
+        private readonly userService: UserService,
+        private em: EntityManager,
+    ) {
+        this.em = em.fork();
     }
 
-    findAll() {
-        return `This action returns all rating`;
+    async upsert(userId: number, createRatingDto: CreateRatingDto) {
+        const userOwns = await this.userService.userOwns(
+            createRatingDto.courseId,
+            userId,
+        );
+        if (!userOwns) {
+            throw new HttpException(
+                'Subscription Required',
+                HttpStatus.PAYMENT_REQUIRED,
+            );
+        }
+        const rating = await this.em.upsert(Rating, {
+            course: createRatingDto.courseId,
+            description: createRatingDto.comment,
+            rating: createRatingDto.rating,
+            user: userId,
+        });
+        return rating.id;
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} rating`;
-    }
-
-    update(id: number, updateRatingDto: UpdateRatingDto) {
-        return `This action updates a #${id} rating`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} rating`;
+    async find(userId: number, courseId: number) {
+        try {
+            const rating = await this.em.findOneOrFail(Rating, {
+                course: courseId,
+                user: userId,
+            });
+            return rating;
+        } catch {
+            throw new NotFoundException();
+        }
     }
 }

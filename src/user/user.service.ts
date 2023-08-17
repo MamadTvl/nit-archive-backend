@@ -6,6 +6,7 @@ import { EntityRepository, EntityManager } from '@mikro-orm/mysql';
 import { AccessToken } from './entities/access-token.entity';
 import { createHash, randomUUID } from 'crypto';
 import * as bcrypt from 'bcryptjs';
+import { Course } from 'course/entities/course.entity';
 
 @Injectable()
 export class UserService {
@@ -58,5 +59,18 @@ export class UserService {
             { user: { id: userId } },
             { deletedAt: new Date() },
         );
+    }
+
+    async userOwns(courseId: number, userId: number) {
+        try {
+            await this.em.findOneOrFail(
+                Course,
+                { id: courseId, subscribedUsers: { id: userId } },
+                { populate: ['subscribedUsers'] },
+            );
+        } catch {
+            return false;
+        }
+        return true;
     }
 }
