@@ -4,8 +4,6 @@ import {
     NestModule,
     OnModuleInit,
 } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
 import { CourseModule } from './course/course.module';
 import { MikroORM } from '@mikro-orm/core';
@@ -13,7 +11,6 @@ import { CategoryModule } from './category/category.module';
 import { TopicModule } from './topic/topic.module';
 import { VideoModule } from './video/video.module';
 import { RatingModule } from './rating/rating.module';
-import { MediaModule } from './media/media.module';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { ConfigModule } from '@nestjs/config';
@@ -123,14 +120,10 @@ const authenticate = async (email: string, password: string) => {
         TopicModule,
         VideoModule,
         RatingModule,
-        MediaModule,
         UserModule,
         RoleModule,
-        DownloadItemModule,
         UploadModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
 })
 export class AppModule implements NestModule, OnModuleInit {
     constructor(private readonly orm: MikroORM) {}

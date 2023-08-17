@@ -11,7 +11,9 @@ import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { AuthGuard } from 'common/guard/auth.guard';
 import { Request } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('rating')
 @Controller('rating')
 export class RatingController {
     constructor(private readonly ratingService: RatingService) {}

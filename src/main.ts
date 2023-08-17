@@ -14,18 +14,9 @@ async function bootstrap() {
         .setTitle('NIT Archive')
         .setDescription('The NIT Archive API description')
         .setVersion('1.0')
-        .addTag('user')
-        .addTag('course')
-        .addTag('category')
-        .addTag('video')
-        .addTag('upload')
-        .addTag('download-item')
-        .addTag('rating')
-        .addTag('media')
-        .addTag('topic')
         .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, document);
+    SwaggerModule.setup('', app, document);
     await app.listen(3000);
 }
 bootstrap();
