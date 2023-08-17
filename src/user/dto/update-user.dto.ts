@@ -10,26 +10,26 @@ export class UpdateUserDto {
     @IsOptional()
     @Length(3)
     @IsString()
-    username: string;
+    username?: string;
 
     @IsOptional()
     @Length(6)
     @IsString()
-    password: string;
+    password?: string;
 
     @IsOptional()
     @IsString()
-    firstName: string;
+    firstName?: string;
 
     @IsOptional()
     @IsString()
-    lastName: string;
+    lastName?: string;
 
     @IsOptional()
     @IsPhoneNumber('IR')
-    phone: string;
+    phone?: string;
 
     @IsOptional()
     @IsEmail()
-    email: string;
+    email?: string;
 }

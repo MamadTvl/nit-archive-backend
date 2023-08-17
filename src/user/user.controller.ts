@@ -1,10 +1,8 @@
 import {
     Controller,
-    Get,
     Post,
     Body,
     Patch,
-    Param,
     Delete,
     UseGuards,
     Req,
@@ -15,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'common/guard/auth.guard';
 import { Request } from 'express';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -35,6 +34,14 @@ export class UserController {
         const token = await this.userService.login(data);
         return {
             token,
+        };
+    }
+
+    @Patch()
+    async update(@Body() data: UpdateUserDto, @Req() req: Request) {
+        await this.userService.update(req.user.id, data);
+        return {
+            message: 'Ok',
         };
     }
 

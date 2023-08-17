@@ -7,6 +7,8 @@ import { AccessToken } from './entities/access-token.entity';
 import { createHash, randomUUID } from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { Course } from 'course/entities/course.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UniqueConstraintViolationException } from '@mikro-orm/core';
 
 @Injectable()
 export class UserService {
@@ -59,6 +61,32 @@ export class UserService {
             { user: { id: userId } },
             { deletedAt: new Date() },
         );
+    }
+
+    async update(userId: number, data: UpdateUserDto) {
+        const user = this.em.getReference(User, userId);
+        user.username = data.username;
+        if (data.password) {
+            const hashedPassword = await bcrypt.hash(
+                data.password,
+                bcrypt.genSaltSync(8),
+            );
+            user.password = hashedPassword;
+        }
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.phone = data.phone;
+        user.email = data.email;
+        try {
+            await this.em.flush();
+        } catch (err) {
+            if (err instanceof UniqueConstraintViolationException) {
+                throw new BadRequestException(
+                    'username or phone or email already taken',
+                );
+            }
+            throw new BadRequestException();
+        }
     }
 
     async userOwns(courseId: number, userId: number) {
