@@ -22,6 +22,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @Get()
+    @UseGuards(AuthGuard)
+    async getUser(@Req() req: Request) {
+        const user = req.user;
+        delete user.accessTokens;
+        return {
+            message: 'Ok',
+            user,
+        };
+    }
+
     @Get('course-access/:course_id')
     @UseGuards(AuthGuard)
     async checkUserOwnsCourse(

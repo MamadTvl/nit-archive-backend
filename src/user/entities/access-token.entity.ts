@@ -10,7 +10,7 @@ export class AccessToken {
     @ManyToOne(() => User, { fieldName: 'user_id' })
     user: User;
 
-    @Property()
+    @Property({ hidden: true })
     token: string;
 
     @Property({ onCreate: () => new Date() })
