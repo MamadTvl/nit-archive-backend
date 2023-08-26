@@ -7,6 +7,8 @@ import {
     UseGuards,
     Req,
     HttpCode,
+    Get,
+    Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
@@ -19,6 +21,36 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
+
+    @Get('course-access/:course_id')
+    @UseGuards(AuthGuard)
+    async checkUserOwnsCourse(
+        @Req() req: Request,
+        @Param('course_id') courseId: number,
+    ) {
+        const hasAccess = await this.userService.userOwns(
+            courseId,
+            req.user.id,
+        );
+        return {
+            hasAccess,
+        };
+    }
+
+    @Get('video-access/:video_id')
+    @UseGuards(AuthGuard)
+    async checkUserOwnsVideo(
+        @Req() req: Request,
+        @Param('video_id') videoId: number,
+    ) {
+        const hasAccess = await this.userService.userOwnsVideo(
+            videoId,
+            req.user.id,
+        );
+        return {
+            hasAccess,
+        };
+    }
 
     @Post('sign-up')
     async register(@Body() data: LoginDto) {

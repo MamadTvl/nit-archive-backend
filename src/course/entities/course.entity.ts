@@ -118,6 +118,12 @@ export class Course {
     })
     duration: number;
 
+    @Property({
+        persist: false,
+        type: 'number',
+    })
+    videosCount: number;
+
     @ManyToOne(() => Category, { nullable: true, fieldName: 'category_id' })
     category?: Category;
 

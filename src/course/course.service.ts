@@ -36,6 +36,10 @@ export class CourseService {
             qb.orderBy({ averageRating: 'DESC' });
         }
         qb.addSelect('avg(rating.rating) as averageRating');
+        qb.leftJoin('course.topics', 'topic');
+        qb.leftJoin('topic.videos', 'video');
+        qb.addSelect('sum(video.length) as duration');
+        qb.addSelect('count(video.id) as videosCount');
         qb.groupBy('course.id');
         if (query.type === 'list') {
             const total = await paginationQb.getCount();
@@ -44,6 +48,20 @@ export class CourseService {
         }
         qb.limit(8);
         return qb.getResultList();
+    }
+
+    async getCourseStats(slug: string) {
+        const qb = this.courseRepository.createQueryBuilder('course');
+        qb.leftJoinAndSelect('course.ratings', 'rating');
+        qb.leftJoinAndSelect('course.topics', 'topic');
+        qb.leftJoinAndSelect('topic.videos', 'video');
+        qb.addSelect('avg(rating.rating) as averageRating');
+        qb.addSelect('sum(video.length) as duration');
+        qb.addSelect('count(video.id) as videosCount');
+        qb.where('course.slug = ?', [slug]);
+        const { averageRating, duration, videosCount } =
+            await qb.getSingleResult();
+        return { averageRating, duration, videosCount };
     }
 
     async findOne(slug: string) {
@@ -56,12 +74,17 @@ export class CourseService {
         qb.leftJoinAndSelect('course.topics', 'topic');
         qb.leftJoinAndSelect('topic.videos', 'video');
         qb.leftJoinAndSelect('topic.downloadItems', 'downloadItem');
-        qb.addSelect('avg(rating.rating) as averageRating');
-        qb.addSelect('sum(video.length) as duration');
         qb.where('course.slug = ?', [slug]);
         try {
-            return await qb.getSingleResult();
-        } catch {
+            const { averageRating, duration, videosCount } =
+                await this.getCourseStats(slug);
+            const course = await qb.getSingleResult();
+            course.averageRating = averageRating;
+            course.duration = duration;
+            course.videosCount = videosCount;
+            return course;
+        } catch (err) {
+            console.log(err);
             throw new NotFoundException();
         }
     }

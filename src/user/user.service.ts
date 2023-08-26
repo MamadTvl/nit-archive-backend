@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { Course } from 'course/entities/course.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UniqueConstraintViolationException } from '@mikro-orm/core';
+import { Video } from 'video/entities/video.entity';
 
 @Injectable()
 export class UserService {
@@ -97,6 +98,20 @@ export class UserService {
                 { populate: ['subscribedUsers'] },
             );
         } catch {
+            return false;
+        }
+        return true;
+    }
+
+    async userOwnsVideo(videoId: number, userId: number) {
+        const qb = this.em.createQueryBuilder(Video, 'video');
+        qb.innerJoinAndSelect('video.topic', 'topic');
+        qb.innerJoinAndSelect('topic.courses', 'course');
+        qb.innerJoinAndSelect('course.subscribedUsers', 'user');
+        qb.where('user.id = ?', [userId]);
+        qb.andWhere('video.id = ?', [videoId]);
+        const video = await qb.getSingleResult();
+        if (!video) {
             return false;
         }
         return true;

@@ -1324,8 +1324,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "description": {
-          "name": "description",
+        "title": {
+          "name": "title",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,

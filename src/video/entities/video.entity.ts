@@ -14,12 +14,12 @@ export class Video {
     id: number;
 
     @Property({ type: 'varchar', nullable: true })
-    description: string | null;
+    title: string | null;
 
-    @Property({ type: 'varchar', nullable: true })
+    @Property({ type: 'varchar', nullable: true, hidden: true })
     videoFile: string | null;
 
-    @Property({ type: 'varchar', nullable: true })
+    @Property({ type: 'varchar', nullable: true, hidden: true })
     aparatIframe: string | null;
 
     @Property({ default: 0 })
