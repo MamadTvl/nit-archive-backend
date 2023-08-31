@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
@@ -87,6 +91,33 @@ export class UserService {
                 );
             }
             throw new BadRequestException();
+        }
+    }
+
+    async getUserCourses(userId: number) {
+        const qb = this.em.createQueryBuilder(Course, 'course');
+        qb.innerJoinAndSelect('course.subscribedUsers', 'user');
+        qb.leftJoin('course.ratings', 'rating');
+        qb.leftJoin('course.topics', 'topic');
+        qb.leftJoin('topic.videos', 'video');
+        qb.addSelect('sum(video.length) as duration');
+        qb.addSelect('count(video.id) as videosCount');
+        qb.where('user.id = ?', [userId]);
+        qb.groupBy('course.id');
+        const courses = await qb.getResultList();
+        return courses;
+    }
+
+    async subscribeToCourse(userId: number, courseId: number) {
+        try {
+            const course = await this.em.findOneOrFail(Course, {
+                id: courseId,
+            });
+            const userRef = this.em.getReference(User, userId);
+            course.subscribedUsers.add(userRef);
+            await this.em.flush();
+        } catch {
+            throw new NotFoundException();
         }
     }
 

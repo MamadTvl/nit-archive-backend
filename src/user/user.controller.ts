@@ -33,6 +33,32 @@ export class UserController {
         };
     }
 
+    @Get('personal-info')
+    @UseGuards(AuthGuard)
+    async getUserPersonalInfo(@Req() req: Request) {
+        const user = req.user;
+        return {
+            message: 'Ok',
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                email: user.email,
+                phone: user.phone,
+            },
+        };
+    }
+
+    @Get('courses')
+    @UseGuards(AuthGuard)
+    async getCourses(@Req() req: Request) {
+        const courses = await this.userService.getUserCourses(req.user.id);
+        return {
+            message: 'courses found',
+            courses,
+        };
+    }
+
     @Get('course-access/:course_id')
     @UseGuards(AuthGuard)
     async checkUserOwnsCourse(
@@ -60,6 +86,18 @@ export class UserController {
         );
         return {
             hasAccess,
+        };
+    }
+
+    @Post('subscribe/:course_id')
+    @UseGuards(AuthGuard)
+    async subscribeCourse(
+        @Req() req: Request,
+        @Param('course_id') courseId: number,
+    ) {
+        await this.userService.subscribeToCourse(req.user.id, courseId);
+        return {
+            message: 'Subscribed Successfully',
         };
     }
 

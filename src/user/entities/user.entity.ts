@@ -31,7 +31,7 @@ export class User {
     @Property({ nullable: true, hidden: true })
     email: string;
 
-    @Property({ hidden: true, unique: true })
+    @Property({ unique: true })
     username: string;
 
     @Property({ hidden: true })
