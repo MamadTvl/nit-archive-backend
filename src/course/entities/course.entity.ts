@@ -167,6 +167,13 @@ export class Course {
     @OneToMany(() => Rating, (rating) => rating.course)
     ratings = new Collection<Rating>(this);
 
+    @Property({
+        type: 'tinyint',
+        default: true,
+        serializer: (value) => Boolean(value),
+    })
+    isActive: boolean;
+
     @Property({ type: 'timestamp', onCreate: () => new Date() })
     createdAt: Date;
 

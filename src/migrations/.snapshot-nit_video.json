@@ -253,6 +253,16 @@
           "nullable": true,
           "mappedType": "integer"
         },
+        "is_active": {
+          "name": "is_active",
+          "type": "tinyint",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "tinyint"
+        },
         "created_at": {
           "name": "created_at",
           "type": "datetime",
