@@ -15,6 +15,10 @@ export default defineConfig({
     entities: ['dist/**/*.entity.js'],
     entitiesTs: ['src/**/*.entity.ts'],
     debug: process.env.DEBUG === 'true',
+    migrations: {
+        path: 'dist/migrations',
+        pathTs: 'src/migrations',
+    },
     loadStrategy: LoadStrategy.JOINED,
     highlighter: new SqlHighlighter(),
     metadataProvider: TsMorphMetadataProvider,
