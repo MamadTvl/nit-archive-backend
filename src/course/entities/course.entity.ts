@@ -105,7 +105,8 @@ export class Course {
             table[star].total = table[star].total + 1;
         }
         Object.keys(table).forEach((item) => {
-            table[item].percentage = (table[item].total / ratings.length) * 100;
+            table[item].percentage =
+                (table[item].total / ratings.length) * 100 ?? 0;
         });
 
         return table;

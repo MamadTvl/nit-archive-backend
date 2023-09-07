@@ -17,7 +17,7 @@ export class CategoryService {
     async findOne(id: number) {
         try {
             const category = await this.categoryRepository.findOneOrFail(
-                { id },
+                { id, parent: null },
                 { populate: ['children'] },
             );
             return category;
