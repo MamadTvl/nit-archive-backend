@@ -11,7 +11,10 @@ export class CategoryService {
     ) {}
 
     findAll() {
-        return this.categoryRepository.find({}, { populate: ['children'] });
+        return this.categoryRepository.find(
+            { parent: null },
+            { populate: ['children'] },
+        );
     }
 
     async findOne(id: number) {
