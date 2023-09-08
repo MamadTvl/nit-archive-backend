@@ -19,7 +19,12 @@ export class Video {
     @Property({ type: 'varchar', nullable: true, hidden: true })
     videoFile: string | null;
 
-    @Property({ type: 'varchar', nullable: true, hidden: true })
+    @Property({
+        type: 'mediumtext',
+        nullable: true,
+        hidden: true,
+        columnType: 'mediumtext',
+    })
     aparatIframe: string | null;
 
     @Property({ default: 0 })
@@ -28,9 +33,17 @@ export class Video {
     @ManyToOne(() => Topic, { fieldName: 'topic_id' })
     topic: Topic;
 
-    @Property({ type: 'timestamp', onCreate: () => new Date() })
+    @Property({
+        type: 'timestamp',
+        onCreate: () => new Date(),
+        defaultRaw: 'CURRENT_TIMESTAMP',
+    })
     createdAt: Date;
 
-    @Property({ type: 'timestamp', onUpdate: () => new Date() })
+    @Property({
+        type: 'timestamp',
+        onUpdate: () => new Date(),
+        defaultRaw: 'CURRENT_TIMESTAMP',
+    })
     updatedAt: Date;
 }

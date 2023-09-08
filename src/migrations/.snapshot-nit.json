@@ -1354,12 +1354,12 @@
         },
         "aparat_iframe": {
           "name": "aparat_iframe",
-          "type": "varchar(255)",
+          "type": "mediumtext",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "string"
+          "mappedType": "unknown"
         },
         "length": {
           "name": "length",
