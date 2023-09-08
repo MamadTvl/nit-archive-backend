@@ -13,12 +13,18 @@ import {
     ParseFilePipe,
     Post,
     UploadedFile,
+    UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'common/decorator/role.decorator';
+import { AuthGuard } from 'common/guard/auth.guard';
 
 @ApiTags('upload')
 @Controller('upload')
+@ApiBearerAuth('user-auth')
+@UseGuards(AuthGuard)
+@Roles()
 export class UploadController {
     constructor(private readonly uploadService: UploadService) {}
 
@@ -56,7 +62,7 @@ export class UploadController {
             new ParseFilePipe({
                 validators: [
                     new MaxFileSizeValidator({ maxSize: 200 * 1000 }),
-                    new FileTypeValidator({ fileType: 'image/jpeg' }),
+                    new FileTypeValidator({ fileType: 'image/*' }),
                 ],
             }),
         )

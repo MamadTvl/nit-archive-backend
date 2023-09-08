@@ -11,7 +11,7 @@ import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { AuthGuard } from 'common/guard/auth.guard';
 import { Request } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('rating')
 @Controller('rating')
@@ -32,6 +32,7 @@ export class RatingController {
         };
     }
 
+    @ApiBearerAuth('user-auth')
     @Get('/course/:course_id')
     @UseGuards(AuthGuard)
     async find(@Param('course_id') courseId: number, @Req() req: Request) {

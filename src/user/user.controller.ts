@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'common/guard/auth.guard';
 import { Request } from 'express';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,6 +22,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @ApiBearerAuth('user-auth')
     @Get()
     @UseGuards(AuthGuard)
     async getUser(@Req() req: Request) {
@@ -32,7 +33,7 @@ export class UserController {
             user,
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Get('personal-info')
     @UseGuards(AuthGuard)
     async getUserPersonalInfo(@Req() req: Request) {
@@ -48,7 +49,7 @@ export class UserController {
             },
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Get('courses')
     @UseGuards(AuthGuard)
     async getCourses(@Req() req: Request) {
@@ -58,7 +59,7 @@ export class UserController {
             courses,
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Get('course-access/:course_id')
     @UseGuards(AuthGuard)
     async checkUserOwnsCourse(
@@ -73,7 +74,7 @@ export class UserController {
             hasAccess,
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Get('video-access/:video_id')
     @UseGuards(AuthGuard)
     async checkUserOwnsVideo(
@@ -88,7 +89,7 @@ export class UserController {
             hasAccess,
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Post('subscribe/:course_id')
     @UseGuards(AuthGuard)
     async subscribeCourse(
@@ -125,7 +126,7 @@ export class UserController {
             message: 'Ok',
         };
     }
-
+    @ApiBearerAuth('user-auth')
     @Delete('logout')
     @UseGuards(AuthGuard)
     async logout(@Req() req: Request) {

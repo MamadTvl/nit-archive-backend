@@ -58,7 +58,7 @@ export class Course {
     @Property({ type: 'varchar', unique: true })
     slug: string;
 
-    @Property({ type: 'varchar' })
+    @Property({ type: 'tinytext', columnType: 'mediumtext' })
     description: string;
 
     @Property({
