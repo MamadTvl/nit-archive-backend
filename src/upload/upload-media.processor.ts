@@ -61,11 +61,15 @@ export class UploadConsumer {
     private async uploadToS3(file: Buffer, destination: string) {
         const { bucketName } = this.configService.get<Config['s3']>('s3');
         const s3 = this.getS3Instance();
+        const isSvg = destination.endsWith('.svg');
         const data = await s3
             .upload({
                 Bucket: bucketName,
                 Key: destination,
                 Body: file,
+                ...(isSvg && {
+                    ContentType: 'image/svg+xml',
+                }),
             })
             .promise();
         return data.Location;
